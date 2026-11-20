@@ -203,3 +203,14 @@ TW_EXCLUDE_APEX=true
 
 # Maintainer specific settings
 #TW_DEVICE_VERSION := Kychera22
+
+# Recovery library isolation (prevents Bionic collision with modern GKI boot.img dynamic libs)
+define BOARD_RECOVERY_IMAGE_PREPARE
+	mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/recovery_lib64; \
+	for lib in libc.so ld-android.so libdl.so libm.so libc++.so; do \
+		if [ -f $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/$$lib ]; then \
+			cp -a $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/$$lib $(TARGET_RECOVERY_ROOT_OUT)/recovery_lib64/; \
+		fi; \
+	done
+endef
+
